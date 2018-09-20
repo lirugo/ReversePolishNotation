@@ -1,7 +1,7 @@
 public class Main {
 
     public static void main(String[] args) {
-        RPN.GetExpression(new StringBuilder("(8+2*5)/(1+3*2-4)"));
+        RPN.getExpression(new StringBuilder("1*(2+3)+10/(2/8)*1"));
     }
 
 }
