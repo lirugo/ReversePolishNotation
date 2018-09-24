@@ -2,42 +2,124 @@ import java.util.Stack;
 
 public class RPN {
 
-    public static String getExpression(StringBuilder input) {
+    private static final char END_CHAR = '$';
+
+    public static StringBuilder getExpression(StringBuilder input) {
         //String for expression
-        String output = "";
+        StringBuilder output = new StringBuilder();
 
         //Stack for operators
         Stack<Character> operators = new Stack<>();
 
         //Set start and end symbol $
-        input.insert(0, '$');
-        input.insert(input.length(), '$');
+        input.insert(0, END_CHAR);
+        input.insert(input.length(), END_CHAR);
 
-        return null;
+        //First char set to stack
+        operators.push(input.charAt(0));
+
+        //For each char in input string
+        for(int i=1; i<input.length(); i++){
+
+            //Skip if its space
+            if(isDelimiter(input.charAt(i)))
+                continue;
+            //If its digit
+            else if(Character.isDigit(input.charAt(i))){
+                //Until is digit
+                while (!isDelimiter(input.charAt(i)) && !isOperator(input.charAt(i)) && !isEndChar(input.charAt(i))){
+                    //Add to output
+                    output.append(input.charAt(i));
+                    i++;
+                    if(i == input.length())
+                        break;
+                }
+                i--;
+            }
+            //If its operator
+            else if(isOperator(input.charAt(i))){
+                //If is '('
+                if(input.charAt(i) == '(')
+                    operators.push(input.charAt(i));
+
+                //If is ')'
+                else if(input.charAt(i) == ')'){
+                    //If current operation have low priority
+                    if(getPriority(input.charAt(i)) < getPriority(operators.peek())){
+                        char s = operators.pop();
+                        while (s != '(')
+                        {
+                            output.append(s);
+                            s = operators.pop();
+                        }
+                    //If current operation have high priority
+                    }else if(getPriority(input.charAt(i)) > getPriority(operators.peek())){
+                        //Generate error
+                        try {
+                            throw new Exception();
+                        } catch (Exception e) {
+                            System.out.println("ERROR INPUT DATA");
+                            return null;
+                        }
+                        //If operation priority is equals
+                    }else{
+                        operators.pop();
+                    }
+                }
+
+                else if(isOperator(input.charAt(i))) {
+                    //If priority of current action lower or equals to priority in stack push operator from stack to output
+                    if (getPriority(input.charAt(i)) <= getPriority(operators.peek()))
+                        while (getPriority(input.charAt(i)) <= getPriority(operators.peek()))
+                            output.append(operators.pop());
+                    //Add to stack operators
+                    operators.push(input.charAt(i));
+
+                }
+
+            }
+            //If is end char
+            else if(isEndChar(input.charAt(i))){
+                char s = operators.pop();
+                while (s != END_CHAR)
+                {
+                    output.append(s);
+                    s = operators.pop();
+                }
+            }
+        }
+
+        return output;
     }
 
     //Get priority of an operation
     private static byte getPriority(char c) {
         switch (c)
         {
-            case '(': return 0;
-            case ')': return 0;
-            case '+': return 1;
-            case '-': return 1;
-            case '*': return 2;
-            case '/': return 2;
-            case '^': return 2;
-            default: return 0;
+            case '$': return 0;
+            case '(': return 1;
+            case ')': return 1;
+            case '+': return 2;
+            case '-': return 2;
+            case '*': return 3;
+            case '/': return 3;
+            case '^': return 3;
+            default: return 1;
         }
     }
 
     //Check is delimiter
+    private static boolean isEndChar(char c) {
+        return END_CHAR == c;
+    }
+
+    //Check is end symbol
     private static boolean isDelimiter(char c) {
-        return " =".indexOf(c) != -1;
+        return " ".indexOf(c) != -1;
     }
 
     //Check is operator
     private static boolean isOperator(char c) {
-        return "+-*/()".indexOf(c) != -1;
+        return "+-*/^()".indexOf(c) != -1;
     }
 }
