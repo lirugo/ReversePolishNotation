@@ -1,19 +1,20 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Stack;
 
 public class Main {
 
     public static void main(String[] args) {
         BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder output;
-        String input = "";
+        Stack<StringBuilder> output;
+        StringBuilder input = null;
 
         while(true) {
             System.out.print("Enter your expression: ");
 
             try {
-                input = console.readLine();
+                input = new StringBuilder(console.readLine());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -21,7 +22,7 @@ public class Main {
             if(input.equals("exit"))
                 return;
 
-            output = RPN.getExpression(new StringBuilder(input));
+            output = RPN.getExpression(input);
             System.out.printf("In Polish reverse notation is: %s", output);
             System.out.println();
         }

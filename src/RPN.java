@@ -4,9 +4,10 @@ public class RPN {
 
     private static final char END_CHAR = '$';
 
-    public static StringBuilder getExpression(StringBuilder input) {
+    //Make Polish expression
+    public static Stack<StringBuilder> getExpression(StringBuilder input) {
         //String for expression
-        StringBuilder output = new StringBuilder();
+        Stack<StringBuilder> output = new Stack<>();
 
         //Stack for operators
         Stack<Character> operators = new Stack<>();
@@ -26,14 +27,16 @@ public class RPN {
                 continue;
             //If its digit
             else if(Character.isDigit(input.charAt(i))){
+                StringBuilder digit = new StringBuilder();
                 //Until is digit
                 while (!isDelimiter(input.charAt(i)) && !isOperator(input.charAt(i)) && !isEndChar(input.charAt(i))){
                     //Add to output
-                    output.append(input.charAt(i));
+                    digit.append(input.charAt(i));
                     i++;
                     if(i == input.length())
                         break;
                 }
+                output.push(digit);
                 i--;
             }
             //If its operator
@@ -46,10 +49,10 @@ public class RPN {
                 else if(input.charAt(i) == ')'){
                     //If current operation have low priority
                     if(getPriority(input.charAt(i)) < getPriority(operators.peek())){
-                        char s = operators.pop();
+                        Character s = operators.pop();
                         while (s != '(')
                         {
-                            output.append(s);
+                            output.push(new StringBuilder(s.toString()));
                             s = operators.pop();
                         }
                     //If current operation have high priority
@@ -71,7 +74,7 @@ public class RPN {
                     //If priority of current action lower or equals to priority in stack push operator from stack to output
                     if (getPriority(input.charAt(i)) <= getPriority(operators.peek()))
                         while (getPriority(input.charAt(i)) <= getPriority(operators.peek()))
-                            output.append(operators.pop());
+                            output.push(new StringBuilder(operators.pop().toString()));
                     //Add to stack operators
                     operators.push(input.charAt(i));
 
@@ -80,10 +83,10 @@ public class RPN {
             }
             //If is end char
             else if(isEndChar(input.charAt(i))){
-                char s = operators.pop();
+                Character s = operators.pop();
                 while (s != END_CHAR)
                 {
-                    output.append(s);
+                    output.push(new StringBuilder(s.toString()));
                     s = operators.pop();
                 }
             }
