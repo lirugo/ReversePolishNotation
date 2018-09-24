@@ -4,17 +4,23 @@ public class RPN {
 
     private static final char END_CHAR = '$';
 
-    //Make Polish expression
-    public static Stack<StringBuilder> getExpression(StringBuilder input) {
-        //String for expression
-        Stack<StringBuilder> output = new Stack<>();
+    private StringBuilder input;
+    private Stack<StringBuilder> output = new Stack<>();
 
-        //Stack for operators
-        Stack<Character> operators = new Stack<>();
+    //Class Constructor
+    public RPN(StringBuilder input) {
 
         //Set start and end symbol $
         input.insert(0, END_CHAR);
         input.insert(input.length(), END_CHAR);
+
+        this.input = input;
+    }
+
+    //Get Polish recording
+    public Stack<StringBuilder> getExpression() {
+        //Stack for operators
+        Stack<Character> operators = new Stack<>();
 
         //First char set to stack
         operators.push(input.charAt(0));
@@ -95,8 +101,39 @@ public class RPN {
         return output;
     }
 
+    //Get Solution
+    public Double getSolution(){
+        Stack<Double> solution = new Stack<>();
+
+        //Cycle for each item
+        for (StringBuilder item : output) {
+           if(isOperator(item.charAt(0))) {
+               double a,b;
+               b = Double.parseDouble(solution.pop().toString());
+               a = Double.parseDouble(solution.pop().toString());
+               solution.push(makeOperation(a, b, item.charAt(0)));
+           }
+           else {
+                solution.push(Double.parseDouble(item.toString()));
+           }
+        }
+        return solution.pop();
+    }
+
+    private Double makeOperation(double a, double b, char operator){
+        switch (operator)
+        {
+            case '+': return a + b;
+            case '-': return a - b;
+            case '*': return a * b;
+            case '/': return a / b;
+            case '^': return 0.00;
+            default: return 0.00;
+        }
+    }
+
     //Get priority of an operation
-    private static byte getPriority(char c) {
+    private byte getPriority(char c) {
         switch (c)
         {
             case '$': return 0;
@@ -112,17 +149,17 @@ public class RPN {
     }
 
     //Check is delimiter
-    private static boolean isEndChar(char c) {
+    private boolean isEndChar(char c) {
         return END_CHAR == c;
     }
 
     //Check is end symbol
-    private static boolean isDelimiter(char c) {
+    private boolean isDelimiter(char c) {
         return " ".indexOf(c) != -1;
     }
 
     //Check is operator
-    private static boolean isOperator(char c) {
+    private boolean isOperator(char c) {
         return "+-*/^()".indexOf(c) != -1;
     }
 }

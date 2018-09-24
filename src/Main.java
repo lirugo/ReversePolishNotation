@@ -19,11 +19,15 @@ public class Main {
                 e.printStackTrace();
             }
 
-            if(input.equals("exit"))
+            if(input.toString().equals("exit"))
                 return;
 
-            output = RPN.getExpression(input);
+            RPN polish = new RPN(input);
+            output = polish.getExpression();
             System.out.printf("In Polish reverse notation is: %s", output);
+            System.out.println();
+
+            System.out.printf("Solution: %.2f", polish.getSolution());
             System.out.println();
         }
     }
