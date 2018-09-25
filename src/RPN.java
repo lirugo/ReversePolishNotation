@@ -9,7 +9,6 @@ public class RPN {
 
     //Class Constructor
     public RPN(StringBuilder input) {
-
         //Set start and end symbol $
         input.insert(0, END_CHAR);
         input.insert(input.length(), END_CHAR);
@@ -118,6 +117,17 @@ public class RPN {
            }
         }
         return solution.pop();
+    }
+
+    //Validate input
+    public boolean validate(){
+        for(int i=0; i<input.length(); i++)
+            if(!Character.isDigit(input.charAt(i)) && !isOperator(input.charAt(i)) && input.charAt(i) != END_CHAR) {
+                System.out.println("ERROR INPUT DATA");
+                return false;
+            }
+
+        return true;
     }
 
     private Double makeOperation(double a, double b, char operator){

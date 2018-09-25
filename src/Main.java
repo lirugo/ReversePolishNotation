@@ -10,6 +10,9 @@ public class Main {
         Stack<StringBuilder> output;
         StringBuilder input = null;
 
+        System.out.println("-----------------------------");
+        System.out.println("||| Type \"exit\" for close |||");
+        System.out.println("-----------------------------");
         while(true) {
             System.out.print("Enter your expression: ");
 
@@ -23,6 +26,10 @@ public class Main {
                 return;
 
             RPN polish = new RPN(input);
+
+            if(!polish.validate())
+                continue;
+
             output = polish.getExpression();
             System.out.printf("In Polish reverse notation is: %s", output);
             System.out.println();
