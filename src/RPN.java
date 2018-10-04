@@ -59,6 +59,7 @@ public class RPN {
                         {
                             output.push(new StringBuilder(s.toString()));
                             s = operators.pop();
+
                         }
                     //If current operation have high priority
                     }else if(getPriority(input.charAt(i)) > getPriority(operators.peek())){
@@ -121,11 +122,24 @@ public class RPN {
 
     //Validate input
     public boolean validate(){
-        for(int i=0; i<input.length(); i++)
+        int bracket = 0;
+
+        for(int i=0; i<input.length(); i++){
+            if(input.charAt(i) == '(')
+                bracket++;
+            else if(input.charAt(i) == ')')
+                bracket--;
+
             if(!Character.isDigit(input.charAt(i)) && !isOperator(input.charAt(i)) && input.charAt(i) != END_CHAR) {
                 System.out.println("ERROR INPUT DATA");
                 return false;
             }
+        }
+
+        if(bracket != 0) {
+            System.out.println("ERROR INPUT DATA");
+            return false;
+        }
 
         return true;
     }
